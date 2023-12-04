@@ -2,44 +2,63 @@ use std::cmp::min;
 use std::fs::read_to_string;
 use std::collections::HashSet;
 
+// fn parse(lines: &[String]) -> Vec<i32> {
+//     lines
+//         .iter()
+//         .map(|line| { line.split(":").last().unwrap_or("") })
+//         .map(|numbers| {
+//             let number_split = numbers.split("|").collect::<Vec<&str>>();
+//             (number_split[0], number_split[1])
+//         })
+//         .map(|(solution_numbers, numbers)| {
+//             let solution_numbers: Vec<i32> = solution_numbers
+//                 .split(" ")
+//                 .filter(|number| number.parse::<i32>().is_ok())
+//                 .map(|number| {
+//                     return number.parse::<i32>().unwrap();
+//                 })
+//                 .collect::<Vec<i32>>();
+//             let numbers: Vec<i32> = numbers
+//                 .split(" ")
+//                 .filter(|number| number.parse::<i32>().is_ok())
+//                 .map(|number| number.parse::<i32>().unwrap())
+//                 .collect::<Vec<i32>>();
+//             (solution_numbers, numbers)
+//         })
+//         .map(|(solution_numbers, numbers)| {
+//             let solution_numbers: HashSet<i32> = HashSet::from_iter(solution_numbers);
+//             let numbers: HashSet<i32> = HashSet::from_iter(numbers);
+//             (solution_numbers, numbers)
+//         })
+//         .map(|(solution_numbers, numbers)| {
+//             solution_numbers.intersection(&numbers).cloned().collect::<Vec<i32>>()
+//         })
+//         .map(|numbers| {
+//             if numbers.is_empty() {
+//                 return 0;
+//             }
+//             return 1 << (numbers.len() - 1);
+//         })
+//         .collect::<Vec<i32>>()
+// }
+
+
 fn parse(lines: &[String]) -> Vec<i32> {
-    lines
-        .iter()
-        .map(|line| { line.split(":").last().unwrap_or("") })
-        .map(|numbers| {
-            let number_split = numbers.split("|").collect::<Vec<&str>>();
-            (number_split[0], number_split[1])
-        })
-        .map(|(solution_numbers, numbers)| {
-            let solution_numbers: Vec<i32> = solution_numbers
-                .split(" ")
-                .filter(|number| number.parse::<i32>().is_ok())
-                .map(|number| {
-                    return number.parse::<i32>().unwrap();
-                })
-                .collect::<Vec<i32>>();
-            let numbers: Vec<i32> = numbers
-                .split(" ")
-                .filter(|number| number.parse::<i32>().is_ok())
-                .map(|number| number.parse::<i32>().unwrap())
-                .collect::<Vec<i32>>();
-            (solution_numbers, numbers)
-        })
-        .map(|(solution_numbers, numbers)| {
-            let solution_numbers: HashSet<i32> = HashSet::from_iter(solution_numbers);
-            let numbers: HashSet<i32> = HashSet::from_iter(numbers);
-            (solution_numbers, numbers)
-        })
-        .map(|(solution_numbers, numbers)| {
-            solution_numbers.intersection(&numbers).cloned().collect::<Vec<i32>>()
-        })
-        .map(|numbers| {
-            if numbers.is_empty() {
-                return 0;
-            }
-            return 1 << (numbers.len() - 1);
-        })
-        .collect::<Vec<i32>>()
+    lines.iter().filter_map(|line| {
+        let parts = line.split(':').last()?.split('|').collect::<Vec<_>>();
+        if parts.len() != 2 { return None; }
+
+        let parse_numbers = |s: &str| s.split_whitespace()
+            .filter_map(|num| num.parse::<i32>().ok())
+            .collect::<HashSet<_>>();
+
+        let solution_numbers = parse_numbers(parts[0]);
+        let numbers = parse_numbers(parts[1]);
+
+        Some(solution_numbers.intersection(&numbers).count())
+    })
+    .map(|count| if count == 0 { 0 } else { 1 << (count - 1) })
+    .collect()
 }
 
 fn parse2(lines: &[String]) -> Vec<i32> {
