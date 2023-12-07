@@ -106,7 +106,6 @@ fn part2(content: &str) -> u64 {
         .collect();
 
 
-    // let minimum = *input.iter().min().unwrap();
     let minimum = 35;
 
     let maximum = *input.iter().max().unwrap();
@@ -135,9 +134,6 @@ fn part2(content: &str) -> u64 {
     panic!("No valid num found within the given ranges")
 }
 
-// fn read_lines(filename: &str) -> Result<Vec<String>, std::io::Error> {
-//     read_to_string(filename).map(|file_content| file_content.lines().map(String::from).collect())
-// }
 
 fn read_file(filename: &str) -> String {
     return fs::read_to_string(filename).expect("Should have been able to read the file");
@@ -145,7 +141,6 @@ fn read_file(filename: &str) -> String {
 
 fn main() {
     let content = read_file("data/day5/input.txt");
-    // let lines: Vec<String> = read_lines("data/day5/input.txt").unwrap();
 
     let result1 = part1(&content);
     println!("Part 1 Result: {}", result1);
@@ -162,7 +157,6 @@ mod tests {
     fn test_1() {
         let content = read_file("data/day5/test1.txt");
 
-        // let lines = read_lines("data/day5/test1.txt").unwrap();
         assert_eq!(part1(&content), 35);
     }
 
